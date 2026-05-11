@@ -10,7 +10,6 @@ typedef struct {
     int u, v, cost;
 } Muchie;
 
-
 void afiseazaDrum(int parinte[], int j) {
     if (parinte[j] == -1) {
         printf("%d", j);
@@ -19,7 +18,6 @@ void afiseazaDrum(int parinte[], int j) {
     afiseazaDrum(parinte, parinte[j]);
     printf(" -> %d", j);
 }
-
 
 void Dijkstra(int graf[MAX_NODURI][MAX_NODURI], int sursa, int dest) {
     int dist[MAX_NODURI], parinte[MAX_NODURI];
@@ -48,14 +46,14 @@ void Dijkstra(int graf[MAX_NODURI][MAX_NODURI], int sursa, int dest) {
         }
     }
 
-    printf("\n[DIJKSTRA] Sursa %d -> Dest %d\n", sursa, dest);
-    if (dist[dest] == INF) printf("Drum inaccesibil.\n");
+    printf("\n[DIJKSTRA]");
+    if (dist[dest] == INF) printf(" Sursa %d -> Dest %d: Nu exista drum.\n", sursa, dest);
     else {
-        printf("Drum: "); afiseazaDrum(parinte, dest);
-        printf("\nCost total: %d\n", dist[dest]);
+        printf(" Cost: %d | Drum: ", dist[dest]);
+        afiseazaDrum(parinte, dest);
+        printf("\n");
     }
 }
-
 
 void BellmanFord(Muchie muchii[], int nr_muchii, int sursa, int dest) {
     int dist[MAX_NODURI], parinte[MAX_NODURI];
@@ -68,33 +66,40 @@ void BellmanFord(Muchie muchii[], int nr_muchii, int sursa, int dest) {
 
     for (int i = 1; i <= MAX_NODURI - 1; i++) {
         for (int j = 0; j < nr_muchii; j++) {
-            if (dist[muchii[j].u] != INF && dist[muchii[j].u] + muchii[j].cost < dist[muchii[j].v]) {
-                dist[muchii[j].v] = dist[muchii[j].u] + muchii[j].cost;
-                parinte[muchii[j].v] = muchii[j].u;
+            int u = muchii[j].u;
+            int v = muchii[j].v;
+            int cost = muchii[j].cost;
+            if (dist[u] != INF && dist[u] + cost < dist[v]) {
+                dist[v] = dist[u] + cost;
+                parinte[v] = u;
             }
         }
     }
 
-    printf("\n[BELLMAN-FORD] Sursa %d -> Dest %d\n", sursa, dest);
-    if (dist[dest] == INF) printf("Drum inaccesibil.\n");
+    printf("[BELLMAN-FORD]");
+    if (dist[dest] == INF) printf(" Sursa %d -> Dest %d: Nu exista drum.\n", sursa, dest);
     else {
-        printf("Drum: "); afiseazaDrum(parinte, dest);
-        printf("\nCost total: %d\n", dist[dest]);
+        printf(" Cost: %d | Drum: ", dist[dest]);
+        afiseazaDrum(parinte, dest);
+        printf("\n");
     }
 }
 
-void proceseazaGraf(char* numeFisier) {
+void executaAnaliza(char* numeFisier) {
     Muchie muchii[MAX_MUCHII];
     int graf_matrice[MAX_NODURI][MAX_NODURI] = {0};
     int nr_muchii = 0;
 
     FILE *f = fopen(numeFisier, "r");
     if (!f) {
-        printf("\nEroare: Nu s-a putut deschide %s\n", numeFisier);
+        printf("\n(!) Eroare: Fisierul %s nu a putut fi deschis.\n", numeFisier);
         return;
     }
 
-    printf("\n\nANALIZA FISIER: %s \n", numeFisier);
+    printf("\n========================================");
+    printf("\n ANALIZA GRAF: %s", numeFisier);
+    printf("\n========================================");
+
     while (fscanf(f, "%d,%d,%d", &muchii[nr_muchii].u, &muchii[nr_muchii].v, &muchii[nr_muchii].cost) != EOF) {
         graf_matrice[muchii[nr_muchii].u][muchii[nr_muchii].v] = muchii[nr_muchii].cost;
         nr_muchii++;
@@ -106,9 +111,9 @@ void proceseazaGraf(char* numeFisier) {
 }
 
 int main() {
-    proceseazaGraf("graf_intrare.csv");
+    executaAnaliza("graf_intrare.csv");
 
-    proceseazaGraf("graf_intrare2.csv");
+    executaAnaliza("graf_intrare2.csv");
 
     return 0;
 }
