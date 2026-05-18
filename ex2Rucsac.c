@@ -1,44 +1,31 @@
 #include <stdio.h>
 
-void swap(int *a, int *b) {
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
+int max(int a, int b) { return (a > b) ? a : b; }
 
-void heapify(int arr[], int n, int i) {
-    int MAX = i;
-    int stanga = 2 * i + 1;
-    int dreapta = 2 * i + 2;
+int solveKnapsack(int W, int wt[], int val[], int n) {
+    int i, w;
+    int K[n + 1][W + 1];
 
-    if (stanga < n && arr[stanga] > arr[MAX]) MAX = stanga;
-    if (dreapta < n && arr[dreapta] > arr[MAX]) MAX = dreapta;
-
-    if (MAX != i) {
-        swap(&arr[i], &arr[MAX]);
-        heapify(arr, n, MAX);
+    for (i = 0; i <= n; i++) {
+        for (w = 0; w <= W; w++) {
+            if (i == 0 || w == 0)
+                K[i][w] = 0;
+            else if (wt[i - 1] <= w)
+                K[i][w] = max(val[i - 1] + K[i - 1][w - wt[i - 1]], K[i - 1][w]);
+            else
+                K[i][w] = K[i - 1][w];
+        }
     }
-}
-
-void heapSort(int arr[], int n) {
-    for (int i = n / 2 - 1; i >= 0; i--) heapify(arr, n, i);
-    for (int i = n - 1; i > 0; i--) {
-        swap(&arr[0], &arr[i]);
-        heapify(arr, i, 0);
-    }
+    return K[n][W];
 }
 
 int main() {
-    int arr[] = {12, 11, 13, 5, 6, 7};
-    int n = sizeof(arr) / sizeof(arr[0]);
+    
+    int val[] = {4, 2, 1, 10, 2};
+    int wt[] = {12, 2, 1, 4, 1};
+    int W = 15;
+    int n = sizeof(val) / sizeof(val[0]);
 
-    printf("Vector initial: ");
-    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
-
-    heapSort(arr, n);
-
-    printf("\nVector sortat: ");
-    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
-    printf("\n");
+    printf("Valoarea maxima ce poate fi transportata: $%d\n", solveKnapsack(W, wt, val, n));
     return 0;
 }
