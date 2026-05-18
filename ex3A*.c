@@ -4,7 +4,7 @@
 #define ROWS 5
 #define COLS 6
 
-void printGridWithRoute(int grid[ROWS][COLS]) {
+void af_matrice(int grid[ROWS][COLS]) {
     printf("Harta (S=Start, E=End, #=Obstacol, *=Drum):\n");
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
@@ -32,7 +32,7 @@ int main() {
     grid[0][3] = 2; grid[0][4] = 2; grid[0][5] = 2; grid[1][5] = 2;
     grid[2][5] = 2; grid[3][5] = 2;
 
-    printGridWithRoute(grid);
+    af_matrice(grid);
     printf("\nAlgoritmul A* a calculat drumul evitand celulele '#' (rosii).\n");
     return 0;
 }
